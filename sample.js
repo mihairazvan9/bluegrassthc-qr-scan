@@ -56,6 +56,9 @@ function animate() {
   ArToolkitContext.update(ArToolkitSource.domElement)
   scene.visible = camera.visible
 
+  if (camera.visible) {
+    cube.position.y = geometry.parameters.height / 2
+  }
   renderer.render( scene, camera );
 }
 animate();
