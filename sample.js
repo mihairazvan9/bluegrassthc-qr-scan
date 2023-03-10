@@ -1,11 +1,4 @@
-// import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
-// const loader = new GLTFLoader()
-// let cube
-// loader.load('https://testenv.ro/files/cub.gltf', (gltfScene) => {
-//   cube = gltfScene.scene
-// })
 
 const scene = new THREE.Scene();
 const camera = new THREE.Camera();
