@@ -32,7 +32,7 @@ ArToolkitContext.init(function(){
 
 const ArMarkerControls = new THREEx.ArMarkerControls(ArToolkitContext, camera, {
   type: 'pattern',
-  patternUrl: '/patt.patt',
+  patternUrl: '/pattern.patt',
   changeMatrixMode: 'cameraTransformMatrix'
 })
 
