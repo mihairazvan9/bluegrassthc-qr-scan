@@ -1,6 +1,9 @@
 const scene = new THREE.Scene();
-const camera = new THREE.Camera();
-scene.add(camera)
+
+// Create a new camera for the raycaster
+const raycasterCamera = new THREE.PerspectiveCamera();
+raycasterCamera.position.set(0, 0, 0);
+raycasterCamera.lookAt(scene.position);
 
 let mouse = new THREE.Vector2();
 let intersects = [];
@@ -33,10 +36,13 @@ const ArToolkitContext = new THREEx.ArToolkitContext({
 })
 
 ArToolkitContext.init(function(){
-  camera.projectionMatrix.copy(ArToolkitContext.getProjectionMatrix())
+
+  // Set the properties of the new camera to match the ARToolkitContext camera
+  raycasterCamera.projectionMatrix.copy(ArToolkitContext.getProjectionMatrix());
+  // raycasterCamera.matrixWorldInverse.fromArray(ArToolkitContext.getCameraMatrix());
 })
 
-const ArMarkerControls = new THREEx.ArMarkerControls(ArToolkitContext, camera, {
+const ArMarkerControls = new THREEx.ArMarkerControls(ArToolkitContext, raycasterCamera, {
   type: 'pattern',
   patternUrl: '/pattern.patt',
   changeMatrixMode: 'cameraTransformMatrix'
@@ -53,19 +59,24 @@ const material = new THREE.MeshNormalMaterial( {
 const cube = new THREE.Mesh( geometry, material );
 // setTimeout(() => {
 //   cube.position.y = geometry.parameters.height / 2
-  scene.add(cube);
+scene.add(cube);
 // },2000)
+cube.addEventListener('click', () => {
+  console.log('Cube clicked');
+  window.open('https://www.google.com/', '_blank');
 
+});
 function onMouseDown(event) {
   event.preventDefault();
 
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
+  raycaster.setFromCamera(mouse, raycasterCamera);
   intersects = raycaster.intersectObjects(scene.children, true);
 
-  if (intersects.length > 0) {
+  if (intersects.length > 0 && intersects[0].object === cube) {
+    console.log(intersects)
     console.log('Clicked on object:', intersects[0].object);
   }
 }
@@ -73,9 +84,9 @@ function animate() {
   requestAnimationFrame( animate );
 
   ArToolkitContext.update(ArToolkitSource.domElement)
-  scene.visible = camera.visible
+  scene.visible = raycasterCamera.visible
 
-  renderer.render( scene, camera );
+  renderer.render( scene, raycasterCamera );
 }
 
 animate();
