@@ -32,7 +32,7 @@ ArToolkitContext.init(function(){
 
 const ArMarkerControls = new THREEx.ArMarkerControls(ArToolkitContext, camera, {
   type: 'pattern',
-  patternUrl: '/pattern.patt',
+  patternUrl: '/patt.patt',
   changeMatrixMode: 'cameraTransformMatrix'
 })
 
@@ -49,20 +49,7 @@ const cube = new THREE.Mesh( geometry, material );
 //   cube.position.y = geometry.parameters.height / 2
 scene.add(cube);
 // },2000)
-window.addEventListener('deviceorientation', (event) => {
-  // Get the phone's rotation in radians
-  const alpha = event.alpha * Math.PI / 180; // Z-axis rotation
-  const beta = event.beta * Math.PI / 180; // X-axis rotation
-  const gamma = event.gamma * Math.PI / 180; // Y-axis rotation
 
-  // Calculate the cube's new position based on the phone's rotation
-  const x = Math.sin(alpha) * Math.sin(beta) * 5; // Multiplier determines sensitivity
-  const y = Math.cos(alpha) * Math.sin(beta) * 5;
-  const z = -Math.cos(beta) * 5;
-
-  // Set the cube's position in the scene
-  cube.position.set(x, y, z);
-});
 
 function animate() {
   requestAnimationFrame( animate );
@@ -76,3 +63,31 @@ function animate() {
   renderer.render( scene, camera );
 }
 animate();
+
+
+// Add an event listener for mouse clicks
+document.addEventListener('click', onClick, false);
+
+// Define a new Raycaster object
+const raycaster = new THREE.Raycaster();
+
+// Define a new Vector2 object for storing the mouse coordinates
+const mouse = new THREE.Vector2();
+
+function onClick(event) {
+  // Calculate the mouse coordinates in normalized device coordinates (NDC)
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+  // Update the picking ray from the camera to the mouse position
+  raycaster.setFromCamera(mouse, camera);
+
+  // Calculate objects intersecting the picking ray
+  const intersects = raycaster.intersectObjects(scene.children, true);
+
+  // Check if the cube was clicked
+  if (intersects.length > 0 && intersects[0].object === cube) {
+    window.open('https://bluegrassthc.com/', '_blank')
+    // Add your code for handling the cube click here
+  }
+}
